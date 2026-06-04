@@ -26,8 +26,9 @@ body.kids-mode {
     background: linear-gradient(135deg, #a0d2ff, #e0f7fa);
 }
 body.kids-mode .glass-panel,
-body.kids-mode .game-container {
-    background: rgba(255, 255, 255, 0.9);
+body.kids-mode .game-container,
+body.kids-mode .game-area {
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: none;
     border: 2px solid #ffb74d;
 }
@@ -36,13 +37,14 @@ body.kids-mode .drag-shape {
     border: 3px solid #ff9800;
     border-radius: 1.5rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    font-size: 3rem;
-    width: 100px;
+    font-size: 2.5rem;
+    width: 100%;
+    cursor: pointer;
 }
 body.kids-mode .drop-zone {
     background: #4caf50;
-    width: 40%;
-    min-width: 150px;
+    width: 80%;
+    max-width: 250px;
     border: 3px dashed white;
     font-size: 1.2rem;
 }
@@ -52,8 +54,12 @@ body.kids-mode .btn-profile {
     border: none;
 }
 body.kids-mode .text-white,
-body.kids-mode .text-white-50 {
+body.kids-mode .text-white-50,
+body.kids-mode .text-white-75 {
     color: #2c3e50 !important;
+}
+body.kids-mode h2, body.kids-mode .fw-bold {
+    color: #1a4d6e !important;
 }
 /* ========== MODO NORMAL (REFRIGERIO / REFUGE) ========== */
 #app-root { width: 100%; max-width: 650px; margin: 0 auto; }
@@ -81,22 +87,23 @@ body.kids-mode .text-white-50 {
 .app-zone { width: 100%; }
 .game-active, .game-inactive { transition: opacity 0.3s; }
 .drag-shape {
-    font-size: 3.5rem;
+    font-size: 2rem;
     cursor: grab;
     user-select: none;
     text-align: center;
     background: rgba(255,255,240,0.08);
     border-radius: 1.5rem;
     padding: 0.5rem;
-    width: 100px;
+    width: 100%;
     touch-action: none;
 }
 .drop-zone {
     background: #2c4c6e;
     border-radius: 3rem;
     padding: 1rem;
-    width: 40%;
-    min-width: 150px;
+    width: 80%;
+    max-width: 250px;
+    margin: 0 auto;
     text-align: center;
     font-weight: bold;
     color: white;
@@ -131,6 +138,5 @@ body.kids-mode .text-white-50 {
     pointer-events: none;
 }
 @media (max-width: 576px) {
-    .drag-shape { width: 70px; font-size: 2.5rem; }
-    .drop-zone { width: 50%; font-size: 0.9rem; }
+    .drag-shape { font-size: 1.8rem; }
 }
