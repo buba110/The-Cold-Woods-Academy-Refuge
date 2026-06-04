@@ -9,25 +9,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const bypassModal = new bootstrap.Modal(document.getElementById('bypassModal'));
     let pressTimer;
 
+    // Botón de niños
     kidsBtn.addEventListener('click', () => {
         profileScreen.classList.add('d-none');
         kidsZone.classList.remove('d-none');
     });
+
+    // Botón de guardiana: abre el modal de bypass directamente
     guardianBtn.addEventListener('click', () => {
         profileScreen.classList.add('d-none');
         bypassModal.show();
     });
-    // Presión larga en copo
-    snowflake.addEventListener('mousedown', () => { pressTimer = setTimeout(() => { bypassModal.show(); }, 3000); });
+
+    // Presión larga en el copo de nieve (también abre bypass)
+    snowflake.addEventListener('mousedown', () => {
+        pressTimer = setTimeout(() => {
+            profileScreen.classList.add('d-none');
+            bypassModal.show();
+        }, 3000);
+    });
     snowflake.addEventListener('mouseup', () => clearTimeout(pressTimer));
-    snowflake.addEventListener('touchstart', (e) => { e.preventDefault(); pressTimer = setTimeout(() => { bypassModal.show(); }, 3000); });
+    snowflake.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        pressTimer = setTimeout(() => {
+            profileScreen.classList.add('d-none');
+            bypassModal.show();
+        }, 3000);
+    });
     snowflake.addEventListener('touchend', () => clearTimeout(pressTimer));
-    // Lógica bypass
+
+    // Lógica del bypass (triángulo a verde + palabra clave)
     const triangle = document.getElementById('drag-triangle');
     const dropGreen = document.getElementById('drop-green');
     const verifyBtn = document.getElementById('verify-bypass');
     const keyInput = document.getElementById('secret-key');
     const errorDiv = document.getElementById('bypass-error');
+
     if (triangle && dropGreen) {
         triangle.addEventListener('dragstart', (e) => e.dataTransfer.setData('text/plain', 'triangle'));
         dropGreen.addEventListener('dragover', (e) => e.preventDefault());
@@ -37,33 +54,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 dropGreen.style.backgroundColor = '#6fbf4c';
                 dropGreen.setAttribute('data-dropped', 'true');
                 errorDiv.innerText = '✅ Triángulo en verde correcto. Ahora escribe la palabra clave.';
-            } else errorDiv.innerText = '❌ Solo el triángulo puede ir aquí.';
+            } else {
+                errorDiv.innerText = '❌ Solo el triángulo puede ir aquí.';
+            }
         });
     }
+
     verifyBtn.addEventListener('click', () => {
         const isDropped = dropGreen.getAttribute('data-dropped') === 'true';
         const keyword = keyInput.value.trim().toLowerCase();
         if (isDropped && (keyword === 'gallodepelea' || keyword === 'pijamacorta')) {
             bypassModal.hide();
             refugeZone.classList.remove('d-none');
+            // Limpiar estado
             dropGreen.setAttribute('data-dropped', 'false');
             dropGreen.style.backgroundColor = '';
             keyInput.value = '';
             errorDiv.innerText = '';
-        } else errorDiv.innerText = 'Acceso denegado. Asegura el triángulo en verde y escribe "gallodepelea" o "pijamacorta".';
+        } else {
+            errorDiv.innerText = 'Acceso denegado. Asegura el triángulo en verde y escribe "gallodepelea" o "pijamacorta".';
+        }
     });
+
+    // Botones de volver a la pantalla de perfil
     backBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const zone = btn.getAttribute('data-zone');
-            if (zone === 'kids') kidsZone.classList.add('d-none');
-            else if (zone === 'refuge') {
+            if (zone === 'kids') {
+                kidsZone.classList.add('d-none');
+            } else if (zone === 'refuge') {
                 refugeZone.classList.add('d-none');
-                document.getElementById('stop-sound')?.click(); // detener sonido
+                // Detener sonido al salir del refugio
+                const stopBtn = document.getElementById('stop-sound');
+                if (stopBtn) stopBtn.click();
             }
             profileScreen.classList.remove('d-none');
         });
     });
-    // Cambio entre juegos (figuras/colores)
+
+    // Cambio entre juegos (figuras / colores)
     const gameBtns = document.querySelectorAll('[data-game]');
     gameBtns.forEach(btn => {
         btn.addEventListener('click', () => {
