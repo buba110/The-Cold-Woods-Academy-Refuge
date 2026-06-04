@@ -100,6 +100,15 @@ const mariposasFrases = [
     "Eres mi persona favorita para todo. Literalmente, todo.",
     "Gracias por existir, Monse. El mundo es mejor contigo."
 ];
+// Añadir control de volumen
+const volumeSlider = document.getElementById('volume-control');
+if (volumeSlider) {
+    volumeSlider.addEventListener('input', (e) => {
+        const vol = e.target.value / 100;
+        if (windGain) windGain.gain.value = vol * 0.25;
+        if (rainGain) rainGain.gain.value = vol * 0.15;
+    });
+}
 // Aseguramos 100 frases (ya están las 100)
 console.assert(mariposasFrases.length === 100, "Faltan frases, cuenta: " + mariposasFrases.length);
 
