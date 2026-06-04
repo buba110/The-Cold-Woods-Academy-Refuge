@@ -1,8 +1,7 @@
-// Juego de figuras geométricas (30 niveles)
 let shapeLevel = 1;
 let shapeScore = 0;
 let currentShapeQuestion = null;
-let shapeElements = null;
+let synth = window.speechSynthesis;
 
 const shapeNames = [
     { name: "Círculo", nameEn: "Circle", icon: "●", dropZone: "circle" },
@@ -11,86 +10,94 @@ const shapeNames = [
     { name: "Rectángulo", nameEn: "Rectangle", icon: "▭", dropZone: "rectangle" }
 ];
 
+function speak(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.9;
+    synth.speak(utterance);
+}
+
 function initShapesGame() {
     const container = document.getElementById('shapes-game-container');
     if (!container) return;
     container.innerHTML = `
-        <div class="game-area bg-black bg-opacity-25 rounded-4 p-4">
+        <div class="game-area p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="text-white">Aciertos: <span id="shape-score">0</span></div>
-                <div class="text-white">Nivel: <span id="shape-level">1</span></div>
+                <div class="fw-bold">Aciertos: <span id="shape-score">0</span></div>
+                <div class="fw-bold">Nivel: <span id="shape-level">1</span></div>
             </div>
-            <div id="shape-question" class="text-center mb-4 p-3 bg-dark bg-opacity-50 rounded-4">
-                <p class="lead text-white">Arrastra la figura que corresponde a:</p>
-                <h2 id="shape-prompt" class="display-6 text-info"></h2>
+            <div id="shape-question" class="text-center mb-4 p-3 rounded-4" style="background:rgba(0,0,0,0.05)">
+                <p class="lead mb-2">🎯 Arrastra o toca la figura</p>
+                <h2 id="shape-prompt" class="display-6"></h2>
             </div>
+            <div id="shape-dropzone" class="drop-zone mx-auto mb-4" style="width:80%; max-width:250px;">⬇️ Suelta aquí ⬇️</div>
             <div class="d-flex flex-wrap justify-content-center gap-3" id="shape-options"></div>
-            <div id="shape-feedback" class="text-center mt-3 fw-bold text-white"></div>
+            <div id="shape-feedback" class="text-center mt-3 fw-bold"></div>
         </div>
     `;
     loadShapeLevel();
 }
 
 function loadShapeLevel() {
-    const level = shapeLevel;
-    // Seleccionar una figura aleatoria (dificultad aumenta con nivel)
     const randomIndex = Math.floor(Math.random() * shapeNames.length);
     currentShapeQuestion = shapeNames[randomIndex];
-    document.getElementById('shape-prompt').innerHTML = `${currentShapeQuestion.name} / ${currentShapeQuestion.nameEn}`;
-    document.getElementById('shape-level').innerText = level;
+    document.getElementById('shape-prompt').innerHTML = `${currentShapeQuestion.icon} ${currentShapeQuestion.name} / ${currentShapeQuestion.nameEn}`;
+    document.getElementById('shape-level').innerText = shapeLevel;
     document.getElementById('shape-score').innerText = shapeScore;
     
-    // Generar opciones (mezclar)
-    const options = [...shapeNames];
-    for (let i = options.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [options[i], options[j]] = [options[j], options[i]];
-    }
+    // Voz
+    speak(`Busca el ${currentShapeQuestion.name}. ${currentShapeQuestion.nameEn}`);
+    
     const optionsDiv = document.getElementById('shape-options');
     optionsDiv.innerHTML = '';
-    options.forEach(shape => {
+    const shuffled = [...shapeNames];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    shuffled.forEach(shape => {
         const dragDiv = document.createElement('div');
         dragDiv.className = 'drag-shape m-2';
         dragDiv.setAttribute('draggable', 'true');
         dragDiv.setAttribute('data-shape', shape.dropZone);
         dragDiv.innerHTML = `<span style="font-size:3rem">${shape.icon}</span><br><small>${shape.name}</small>`;
-        dragDiv.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', shape.dropZone);
-            e.dataTransfer.effectAllowed = 'copy';
-        });
+        dragDiv.addEventListener('dragstart', (e) => e.dataTransfer.setData('text/plain', shape.dropZone));
+        // Tocar también funciona (para niños pequeños)
+        dragDiv.addEventListener('click', () => checkAnswer(shape.dropZone));
         optionsDiv.appendChild(dragDiv);
     });
-    // Crear zona de drop (solamente una)
-    let dropZone = document.querySelector('#shape-question + .drop-zone');
-    if (!dropZone) {
-        dropZone = document.createElement('div');
-        dropZone.className = 'drop-zone mx-auto mt-3';
-        dropZone.style.width = '150px';
-        dropZone.innerHTML = '⬇️ Suelta aquí ⬇️';
-        dropZone.addEventListener('dragover', (e) => e.preventDefault());
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            const droppedShape = e.dataTransfer.getData('text/plain');
-            const feedback = document.getElementById('shape-feedback');
-            if (droppedShape === currentShapeQuestion.dropZone) {
-                shapeScore++;
-                document.getElementById('shape-score').innerText = shapeScore;
-                feedback.innerHTML = '✅ ¡Correcto! ✅';
-                if (shapeScore >= shapeLevel * 2) { // subir nivel cada 2 aciertos por nivel
-                    if (shapeLevel < 30) {
-                        shapeLevel++;
-                        shapeScore = 0;
-                        feedback.innerHTML += ` ¡Subiste al nivel ${shapeLevel}! 🎉`;
-                    } else {
-                        feedback.innerHTML = '🏆 ¡Completaste los 30 niveles! Eres un explorador experto. 🏆';
-                    }
-                }
-                loadShapeLevel();
+    
+    const dropZone = document.getElementById('shape-dropzone');
+    dropZone.ondragover = (e) => e.preventDefault();
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        const dropped = e.dataTransfer.getData('text/plain');
+        checkAnswer(dropped);
+    };
+}
+
+function checkAnswer(selected) {
+    const feedback = document.getElementById('shape-feedback');
+    if (selected === currentShapeQuestion.dropZone) {
+        shapeScore++;
+        document.getElementById('shape-score').innerText = shapeScore;
+        feedback.innerHTML = '✅ ¡Correcto! ✅';
+        speak(`¡Muy bien! ${currentShapeQuestion.name}`);
+        if (shapeScore >= shapeLevel * 2) {
+            if (shapeLevel < 30) {
+                shapeLevel++;
+                shapeScore = 0;
+                feedback.innerHTML += ` 🎉 ¡Subiste al nivel ${shapeLevel}! 🎉`;
+                speak(`¡Felicidades! Pasaste al nivel ${shapeLevel}`);
             } else {
-                feedback.innerHTML = '❌ Intenta de nuevo, esa no es la figura correcta. ❌';
+                feedback.innerHTML = '🏆 ¡Completaste los 30 niveles! Eres un campeón. 🏆';
+                speak('¡Increíble! Completaste todos los niveles.');
             }
-        });
-        document.querySelector('#shape-question').after(dropZone);
+        }
+        loadShapeLevel();
+    } else {
+        feedback.innerHTML = '❌ Intenta de nuevo, esa no es la figura correcta. ❌';
+        speak('No es correcto, vuelve a intentarlo');
     }
 }
 
