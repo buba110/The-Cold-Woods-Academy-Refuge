@@ -23,15 +23,15 @@ function initShapesGame() {
     container.innerHTML = `
         <div class="game-area p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="fw-bold">Aciertos: <span id="shape-score">0</span></div>
-                <div class="fw-bold">Nivel: <span id="shape-level">1</span></div>
+                <div class="fw-bold">🎯 Aciertos: <span id="shape-score">0</span></div>
+                <div class="fw-bold">⭐ Nivel: <span id="shape-level">1</span></div>
             </div>
             <div id="shape-question" class="text-center mb-4 p-3 rounded-4" style="background:rgba(0,0,0,0.05)">
-                <p class="lead mb-2">🎯 Arrastra o toca la figura</p>
+                <p class="lead mb-2">🖐️ Arrastra o toca la figura</p>
                 <h2 id="shape-prompt" class="display-6"></h2>
             </div>
-            <div id="shape-dropzone" class="drop-zone mx-auto mb-4" style="width:80%; max-width:250px;">⬇️ Suelta aquí ⬇️</div>
-            <div class="d-flex flex-wrap justify-content-center gap-3" id="shape-options"></div>
+            <div id="shape-dropzone" class="drop-zone mb-4" style="width:80%; max-width:280px;">⬇️ Suelta o toca aquí ⬇️</div>
+            <div class="row g-3 justify-content-center" id="shape-options"></div>
             <div id="shape-feedback" class="text-center mt-3 fw-bold"></div>
         </div>
     `;
@@ -45,26 +45,31 @@ function loadShapeLevel() {
     document.getElementById('shape-level').innerText = shapeLevel;
     document.getElementById('shape-score').innerText = shapeScore;
     
-    // Voz
+    // Voz bilingüe
     speak(`Busca el ${currentShapeQuestion.name}. ${currentShapeQuestion.nameEn}`);
     
     const optionsDiv = document.getElementById('shape-options');
     optionsDiv.innerHTML = '';
+    // Mezclar opciones
     const shuffled = [...shapeNames];
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     shuffled.forEach(shape => {
+        const col = document.createElement('div');
+        col.className = 'col-6 col-md-3';
         const dragDiv = document.createElement('div');
-        dragDiv.className = 'drag-shape m-2';
-        dragDiv.setAttribute('draggable', 'true');
+        dragDiv.className = 'drag-shape p-2 text-center';
         dragDiv.setAttribute('data-shape', shape.dropZone);
-        dragDiv.innerHTML = `<span style="font-size:3rem">${shape.icon}</span><br><small>${shape.name}</small>`;
+        dragDiv.innerHTML = `<span style="font-size:2.5rem">${shape.icon}</span><br><small>${shape.name}</small>`;
+        // Arrastrar
+        dragDiv.setAttribute('draggable', 'true');
         dragDiv.addEventListener('dragstart', (e) => e.dataTransfer.setData('text/plain', shape.dropZone));
-        // Tocar también funciona (para niños pequeños)
+        // Tocar (para niños pequeños)
         dragDiv.addEventListener('click', () => checkAnswer(shape.dropZone));
-        optionsDiv.appendChild(dragDiv);
+        col.appendChild(dragDiv);
+        optionsDiv.appendChild(col);
     });
     
     const dropZone = document.getElementById('shape-dropzone');
@@ -74,6 +79,7 @@ function loadShapeLevel() {
         const dropped = e.dataTransfer.getData('text/plain');
         checkAnswer(dropped);
     };
+    // También tocar el dropzone no hace nada, pero permitir tocar las figuras sí.
 }
 
 function checkAnswer(selected) {
