@@ -3,127 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>The Cold Woods Academy | Para Monse</title>
-    <!-- Bootstrap 5 (solo CSS, sin JS para evitar conflictos) -->
+    <title>❄️ The Cold Woods Academy | Para Monse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Estilos principales (Team Frío) -->
     <link rel="stylesheet" href="css/estilos.css">
-    <!-- Manifest PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0a192f">
 </head>
 <body>
-    <!-- Pantalla de selección de perfil -->
-    <div id="profile-screen" class="profile-container glass-card">
-        <div class="text-center">
-            <h1 class="display-5 fw-light mb-3">❄️ The Cold Woods Academy ❄️</h1>
-            <p class="lead mb-4">Un lugar mágico para aprender y soñar</p>
+    <div id="app-root">
+        <!-- Pantalla de selección de perfil (capa pública) -->
+        <div id="profile-screen" class="profile-container glass-panel">
+            <div class="text-center">
+                <div class="snowflakes-deco">❄️ ❄️ ❄️</div>
+                <h1 class="display-4 fw-light tracking-wide">The Cold Woods Academy</h1>
+                <p class="lead mt-2 text-white-75">un refugio de aprendizaje y magia</p>
+            </div>
+            <div class="row g-4 justify-content-center mt-4">
+                <div class="col-6 col-md-5">
+                    <button id="kids-btn" class="btn-profile w-100 py-4">
+                        <i class="bi bi-people-fill fs-1"></i>
+                        <span class="d-block mt-2">Área de Pequeños<br>Exploradores</span>
+                    </button>
+                </div>
+                <div class="col-6 col-md-5">
+                    <button id="guardian-btn" class="btn-profile w-100 py-4">
+                        <i class="bi bi-shield-lock-fill fs-1"></i>
+                        <span class="d-block mt-2">Portal de la<br>Guardiana</span>
+                    </button>
+                </div>
+            </div>
+            <p class="text-center mt-5 text-white-50 small">para Monse, con todo el frío de la montaña</p>
         </div>
-        <div class="row g-4 justify-content-center">
-            <div class="col-6 col-md-5">
-                <button id="kids-btn" class="btn-profile w-100 py-4">
-                    <i class="bi bi-people-fill fs-1"></i>
-                    <span class="d-block mt-2">Área de Pequeños<br>Exploradores</span>
-                </button>
+
+        <!-- ZONA INFANTIL BILINGÜE (juegos con niveles) -->
+        <div id="kids-zone" class="app-zone d-none">
+            <div class="container py-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button class="btn-back btn btn-outline-light rounded-pill px-4" data-zone="kids"><i class="bi bi-arrow-left"></i> Volver</button>
+                    <h2 class="h4 m-0 text-white">⛄ Juegos Didácticos</h2>
+                    <div style="width: 70px;"></div>
+                </div>
+                <div class="game-selector mb-4">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-outline-info active" data-game="shapes">🔺 Figuras</button>
+                        <button type="button" class="btn btn-outline-info" data-game="colors">🎨 Colores y Conteo</button>
+                    </div>
+                </div>
+                <!-- Juego de figuras (niveles) -->
+                <div id="shapes-game-container" class="game-active"></div>
+                <!-- Juego de colores (niveles) -->
+                <div id="colors-game-container" class="game-inactive d-none"></div>
+                <div class="level-indicator mt-3 text-center text-white-50">
+                    Nivel <span id="current-level">1</span> / <span id="max-level">30</span>
+                </div>
             </div>
-            <div class="col-6 col-md-5">
-                <button id="guardian-btn" class="btn-profile w-100 py-4">
-                    <i class="bi bi-shield-lock-fill fs-1"></i>
-                    <span class="d-block mt-2">Portal de la<br>Guardiana</span>
-                </button>
-            </div>
+            <div id="secret-snowflake" class="snowflake-bypass">❄️</div>
         </div>
-        <p class="text-center mt-5 text-white-50 small">para Monse, con todo el frío de la montaña</p>
-    </div>
 
-    <!-- ZONA INFANTIL BILINGÜE -->
-    <div id="kids-zone" class="app-zone d-none">
-        <div class="container py-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <button class="btn-back btn btn-outline-light rounded-pill px-4" data-zone="kids">
-                    <i class="bi bi-arrow-left"></i> Volver
-                </button>
-                <h2 class="h4 m-0 text-white">⛄ Juegos Didácticos</h2>
-                <div style="width: 70px;"></div>
-            </div>
-            <ul class="nav nav-tabs justify-content-center border-0 mb-4" id="kidsTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active rounded-pill mx-1" data-bs-toggle="tab" data-bs-target="#shapes" type="button">🔺 Figuras</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link rounded-pill mx-1" data-bs-toggle="tab" data-bs-target="#colors" type="button">🎨 Colores y Conteo</button>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="shapes">
-                    <div id="shape-game" class="game-container"></div>
+        <!-- ZONA SECRETA: REFUGIO DE LA CABAÑA (Rincón de la Guardiana) -->
+        <div id="refuge-zone" class="app-zone d-none">
+            <div class="container py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <button class="btn-back btn btn-outline-light rounded-pill px-4" data-zone="refuge"><i class="bi bi-arrow-left"></i> Salir</button>
+                    <h2 class="h4 m-0 text-white">🏔️ Refugio de la Cabaña</h2>
+                    <div style="width: 70px;"></div>
                 </div>
-                <div class="tab-pane fade" id="colors">
-                    <div id="color-game" class="game-container"></div>
+                <!-- Termómetro de Mariposas (100 frases reales) -->
+                <div class="glass-panel p-4 mb-4 text-center">
+                    <i class="bi bi-thermometer-half fs-1 text-info"></i>
+                    <h3 class="h5 mt-2">Termómetro de Mariposas</h3>
+                    <p class="small text-white-50">Cada clic libera un mensaje diferente, especialmente para ti.</p>
+                    <button id="mariposas-btn" class="btn btn-romantic w-100 py-2"><i class="bi bi-suit-heart-fill"></i> ¿Cómo están las mariposas?</button>
+                    <div id="mariposas-message" class="mt-3 fst-italic text-light bg-dark bg-opacity-25 p-3 rounded"></div>
                 </div>
-            </div>
-        </div>
-        <!-- Copo de nieve oculto para bypass (presión larga) -->
-        <div id="secret-snowflake" class="snowflake-bypass">❄️</div>
-    </div>
-
-    <!-- ZONA SECRETA: REFUGIO DE LA CABAÑA -->
-    <div id="refuge-zone" class="app-zone d-none">
-        <div class="container py-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <button class="btn-back btn btn-outline-light rounded-pill px-4" data-zone="refuge">
-                    <i class="bi bi-arrow-left"></i> Salir
-                </button>
-                <h2 class="h4 m-0 text-white">🏔️ Refugio de la Cabaña</h2>
-                <div style="width: 70px;"></div>
-            </div>
-
-            <!-- Termómetro de Mariposas -->
-            <div class="glass-card mb-4 text-center p-4">
-                <i class="bi bi-thermometer-half fs-1 text-info"></i>
-                <h3 class="h5 mt-2">Termómetro de Mariposas</h3>
-                <p class="small text-white-50">Cada vez que sientas mariposas o necesites un mensaje, presiónalo.</p>
-                <button id="mariposas-btn" class="btn btn-romantic w-100 py-2">
-                    <i class="bi bi-suit-heart-fill"></i> ¿Cómo están las mariposas?
-                </button>
-                <div id="mariposas-message" class="mt-3 fst-italic text-light bg-dark bg-opacity-25 p-2 rounded"></div>
-            </div>
-
-            <!-- Clóset Privado -->
-            <div class="glass-card mb-4 p-4 text-center">
-                <i class="bi bi-door-closed fs-1 text-secondary"></i>
-                <h3 class="h5 mt-2">Clóset Privado</h3>
-                <div class="my-3">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2399c2e0' d='M50,20 C30,20 20,40 25,60 C30,75 45,85 50,85 C55,85 70,75 75,60 C80,40 70,20 50,20Z' /%3E%3C/svg%3E" alt="pijama" style="width: 70px;">
+                <!-- Clóset Privado (20 mensajes) -->
+                <div class="glass-panel p-4 mb-4 text-center">
+                    <i class="bi bi-door-closed fs-1 text-secondary"></i>
+                    <h3 class="h5 mt-2">Clóset Privado</h3>
+                    <div class="my-3"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2399c2e0' d='M50,20 C30,20 20,40 25,60 C30,75 45,85 50,85 C55,85 70,75 75,60 C80,40 70,20 50,20Z' /%3E%3C/svg%3E" alt="pijama" style="width: 70px;"></div>
+                    <button id="closet-btn" class="btn btn-outline-light w-100 py-2">Abrir mensaje nocturno</button>
+                    <div id="closet-message" class="mt-3 text-gold small"></div>
                 </div>
-                <button id="closet-btn" class="btn btn-outline-light w-100 py-2">Abrir mensaje nocturno</button>
-                <div id="closet-message" class="mt-3 text-gold small"></div>
-            </div>
-
-            <!-- Alivio Sónico -->
-            <div class="glass-card p-4">
-                <i class="bi bi-headphones fs-1 text-primary"></i>
-                <h3 class="h5 mt-2">Alivio Sónico</h3>
-                <p class="small text-white-50">Viento de montaña + lluvia suave. Atenúa la luz para descansar.</p>
-                <div class="d-flex gap-2">
-                    <button id="sonic-relief" class="btn btn-dark flex-grow-1"><i class="bi bi-play-circle"></i> Reproducir</button>
-                    <button id="stop-sound" class="btn btn-secondary flex-grow-1"><i class="bi bi-stop-circle"></i> Detener</button>
-                </div>
-                <div class="form-check form-switch mt-3">
-                    <input class="form-check-input" type="checkbox" id="darken-screen">
-                    <label class="form-check-label text-white-50" for="darken-screen">Modo descanso (pantalla oscura)</label>
+                <!-- Alivio Sónico (sonido real de montaña) -->
+                <div class="glass-panel p-4">
+                    <i class="bi bi-headphones fs-1 text-primary"></i>
+                    <h3 class="h5 mt-2">Alivio Sónico</h3>
+                    <p class="small text-white-50">Viento de montaña + lluvia suave (sin ruido molesto).</p>
+                    <div class="d-flex gap-2">
+                        <button id="sonic-relief" class="btn btn-dark flex-grow-1"><i class="bi bi-play-circle"></i> Reproducir</button>
+                        <button id="stop-sound" class="btn btn-secondary flex-grow-1"><i class="bi bi-stop-circle"></i> Detener</button>
+                    </div>
+                    <div class="mt-3">
+                        <button id="dim-screen" class="btn btn-sm btn-outline-light w-100">🌙 Modo Descanso (atenuar pantalla)</button>
+                        <button id="restore-screen" class="btn btn-sm btn-outline-secondary w-100 mt-2 d-none">☀️ Restaurar luminosidad</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Bypass (secuencia lógica) -->
+    <!-- Modal de Bypass (acceso secreto) -->
     <div class="modal fade" id="bypassModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark text-light border-info">
                 <div class="modal-header border-secondary">
-                    <h5 class="modal-title">🔐 Verificación de Guardiana</h5>
+                    <h5 class="modal-title">🔐 Acceso al Refugio</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -132,7 +118,7 @@
                         <div id="drag-triangle" draggable="true" class="drag-shape" data-shape="triangle">▲</div>
                         <div id="drop-green" class="drop-zone" data-color="green">🟢 Verde</div>
                     </div>
-                    <input type="text" id="secret-key" class="form-control bg-dark text-light border-secondary" placeholder="Palabra clave...">
+                    <input type="text" id="secret-key" class="form-control bg-dark text-light border-secondary" placeholder="Palabra clave..." autocomplete="off">
                     <div class="text-center mt-4">
                         <button id="verify-bypass" class="btn btn-info px-4">Acceder al Refugio</button>
                     </div>
@@ -142,19 +128,13 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/kids-shapes.js"></script>
-    <script src="js/kids-colors.js"></script>
-    <script src="js/refuge.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/game-shapes.js"></script>
+    <script src="js/game-colors.js"></script>
+    <script src="js/refuge-core.js"></script>
+    <script src="js/app-main.js"></script>
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then(reg => console.log('✅ Service Worker registrado', reg))
-                .catch(err => console.error('❌ Error SW:', err));
-        }
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js').then(reg => console.log('✅ SW', reg)).catch(err => console.error('❌ SW', err));
     </script>
 </body>
 </html>
-   
