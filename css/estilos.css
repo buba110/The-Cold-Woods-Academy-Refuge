@@ -3,20 +3,59 @@
     --glass: rgba(10, 25, 47, 0.7);
     --glass-border: rgba(153, 194, 224, 0.35);
     --ice: #99c2e0;
-    --lavender: #c5c9e8;
     --gold: #f0d86e;
-    --white-smoke: #f4f8ff;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 body {
-    background: radial-gradient(circle at 20% 30%, #0b2b3b, #02101f);
     font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at 20% 30%, #0b2b3b, #02101f);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
+    transition: background 0.3s, color 0.3s;
 }
+/* ========== KIDS MODE (ACTIVADO POR JS) ========== */
+body.kids-mode {
+    background: linear-gradient(135deg, #a0d2ff, #e0f7fa);
+}
+body.kids-mode .glass-panel,
+body.kids-mode .game-container {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: none;
+    border: 2px solid #ffb74d;
+}
+body.kids-mode .drag-shape {
+    background: #ffecb3;
+    border: 3px solid #ff9800;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-size: 3rem;
+    width: 100px;
+}
+body.kids-mode .drop-zone {
+    background: #4caf50;
+    width: 40%;
+    min-width: 150px;
+    border: 3px dashed white;
+    font-size: 1.2rem;
+}
+body.kids-mode .btn-profile {
+    background: #ffb74d;
+    color: #2c3e50;
+    border: none;
+}
+body.kids-mode .text-white,
+body.kids-mode .text-white-50 {
+    color: #2c3e50 !important;
+}
+/* ========== MODO NORMAL (REFRIGERIO / REFUGE) ========== */
 #app-root { width: 100%; max-width: 650px; margin: 0 auto; }
 .glass-panel {
     background: var(--glass);
@@ -24,7 +63,6 @@ body {
     border-radius: 2rem;
     border: 1px solid var(--glass-border);
     box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-    transition: all 0.25s;
 }
 .profile-container { padding: 2rem 1.5rem; }
 .btn-profile {
@@ -51,16 +89,19 @@ body {
     border-radius: 1.5rem;
     padding: 0.5rem;
     width: 100px;
+    touch-action: none;
 }
 .drop-zone {
     background: #2c4c6e;
     border-radius: 3rem;
     padding: 1rem;
-    width: 120px;
+    width: 40%;
+    min-width: 150px;
     text-align: center;
     font-weight: bold;
     color: white;
     transition: 0.2s;
+    border: 2px dashed #99c2e0;
 }
 .snowflake-bypass {
     position: fixed;
@@ -78,9 +119,7 @@ body {
     border: none;
     color: white;
     border-radius: 3rem;
-    font-weight: 500;
 }
-.btn-romantic:hover { background: linear-gradient(135deg, #7f5f9c, #3c6a8a); transform: scale(1.01); }
 .text-gold { color: var(--gold); }
 .dim-overlay {
     position: fixed;
@@ -93,5 +132,5 @@ body {
 }
 @media (max-width: 576px) {
     .drag-shape { width: 70px; font-size: 2.5rem; }
-    .drop-zone { width: 90px; font-size: 0.8rem; }
+    .drop-zone { width: 50%; font-size: 0.9rem; }
 }
