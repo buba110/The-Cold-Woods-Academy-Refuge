@@ -3,27 +3,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const kidsZone = document.getElementById('kids-zone');
     const refugeZone = document.getElementById('refuge-zone');
     const kidsBtn = document.getElementById('kids-btn');
-    const guardianBtn = document.getElementById('guardian-btn');
     const backBtns = document.querySelectorAll('.btn-back');
     const snowflake = document.getElementById('secret-snowflake');
     const bypassModal = new bootstrap.Modal(document.getElementById('bypassModal'));
     let pressTimer;
 
-    // Botón de niños
+    // Botón de niños - activa kids-mode
     kidsBtn.addEventListener('click', () => {
+        document.body.classList.add('kids-mode');
         profileScreen.classList.add('d-none');
         kidsZone.classList.remove('d-none');
     });
 
-    // Botón de guardiana: abre el modal de bypass directamente
-    guardianBtn.addEventListener('click', () => {
-        profileScreen.classList.add('d-none');
-        bypassModal.show();
-    });
-
-    // Presión larga en el copo de nieve (también abre bypass)
+    // Presión larga en el copo de nieve (3 segundos) - acceso al refugio
     snowflake.addEventListener('mousedown', () => {
         pressTimer = setTimeout(() => {
+            document.body.classList.remove('kids-mode');
             profileScreen.classList.add('d-none');
             bypassModal.show();
         }, 3000);
@@ -32,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     snowflake.addEventListener('touchstart', (e) => {
         e.preventDefault();
         pressTimer = setTimeout(() => {
+            document.body.classList.remove('kids-mode');
             profileScreen.classList.add('d-none');
             bypassModal.show();
         }, 3000);
@@ -66,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isDropped && (keyword === 'gallodepelea' || keyword === 'pijamacorta')) {
             bypassModal.hide();
             refugeZone.classList.remove('d-none');
-            // Limpiar estado
             dropGreen.setAttribute('data-dropped', 'false');
             dropGreen.style.backgroundColor = '';
             keyInput.value = '';
@@ -76,15 +71,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Botones de volver a la pantalla de perfil
+    // Botones de volver
     backBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const zone = btn.getAttribute('data-zone');
             if (zone === 'kids') {
                 kidsZone.classList.add('d-none');
+                document.body.classList.remove('kids-mode');
             } else if (zone === 'refuge') {
                 refugeZone.classList.add('d-none');
-                // Detener sonido al salir del refugio
                 const stopBtn = document.getElementById('stop-sound');
                 if (stopBtn) stopBtn.click();
             }
