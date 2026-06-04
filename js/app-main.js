@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     snowflake.addEventListener('touchend', () => clearTimeout(pressTimer));
 
-    // Lógica del bypass (triángulo a verde + palabra clave)
+    // Lógica del bypass
     const triangle = document.getElementById('drag-triangle');
     const dropGreen = document.getElementById('drop-green');
     const verifyBtn = document.getElementById('verify-bypass');
